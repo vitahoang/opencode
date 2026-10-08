@@ -366,3 +366,25 @@ export function createColors(options: KnightRiderOptions = {}): ColorGenerator {
 
   return createKnightRiderTrail(trailOptions)
 }
+
+// VitaCode braille wave: a sine line of dots scrolls left to right through 5 braille cells (a 10x4 dot grid),
+// one dot-column per step, 10 steps per seamless loop. Every frame is 5 single-cell braille glyphs.
+const WAVE_COLS = 10
+const WAVE_BITS = [
+  [0x01, 0x02, 0x04, 0x40],
+  [0x08, 0x10, 0x20, 0x80],
+]
+
+/**
+ * Creates frame strings for the braille wave loader
+ * @param hold Ticks each step is shown, so the loader keeps the caller's tick interval
+ * @returns Array of frame strings
+ */
+export function createBrailleWaveFrames(hold: number = 2): string[] {
+  return Array.from({ length: WAVE_COLS }, (_, step) => {
+    const row = (x: number) => Math.floor(1.5 - 1.5 * Math.sin((2 * Math.PI * (x - step)) / WAVE_COLS) + 0.5)
+    return Array.from({ length: WAVE_COLS / 2 }, (_, cell) =>
+      String.fromCharCode(0x2800 | WAVE_BITS[0]![row(2 * cell)]! | WAVE_BITS[1]![row(2 * cell + 1)]!),
+    ).join("")
+  }).flatMap((frame) => Array.from({ length: hold }, () => frame))
+}

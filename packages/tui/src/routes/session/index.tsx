@@ -200,7 +200,8 @@ export function Session() {
 
   createEffect(() => {
     const title = Locale.truncate(session()?.title ?? "", 50)
-    setEpilogue(sessionEpilogue({ title, sessionID: session()?.id }))
+    const colors = { vita: theme.primary, code: theme.text, background: theme.background }
+    setEpilogue(sessionEpilogue({ title, sessionID: session()?.id, colors }))
   })
   onCleanup(() => setEpilogue())
   const children = createMemo(() => {

@@ -4,6 +4,22 @@
 - The default branch in this repo is `dev`.
 - Local `main` ref may not exist; use `dev` or `origin/dev` for diffs.
 
+## Fork Notes
+
+This repository is a fork of `anomalyco/opencode`. `origin` is `vitahoang/opencode` and `upstream` is `anomalyco/opencode`. Upstream lands changes daily.
+
+- Branch off `origin/dev`, and merge `upstream/dev` in before starting non-trivial work.
+- Keep fork-specific changes small and isolated so upstream merges stay cheap. Prefer extending the plugin and slot APIs over rewriting upstream code paths.
+- Run `bun run lint` and `bun run typecheck` from the repo root. Run tests from the package directory, never the root.
+- Launch the TUI locally with `bun run dev`.
+
+## Fork-Specific Features
+
+- `packages/tui/src/feature-plugins/home/mascot.tsx` registers a TUI plugin that renders the VitaCode mascot head + "vitacode" wordmark into the `home_logo` slot, replacing the default logo. It steps down to smaller variants (wordmark, stacked, "vita", "v") as the terminal shrinks, and blinks/squints unless `animations_enabled` is off.
+- Glyph data (wordmark, mascot pixel grid, variants, `pickLogo`) lives in `packages/tui/src/vita.ts`, shared by the plugin and the exit banner in `packages/tui/src/util/presentation.ts`. Mascot and "vita" colors come from the active theme's `primary`; never hardcode brand colors.
+- The prompt loader next to `esc interrupt` is a braille sine wave (`createBrailleWaveFrames` in `packages/tui/src/ui/spinner.ts`).
+- `packages/tui/src/theme/assets/vita.json` and `vitacode.json` are the fork's own themes. They are registered in `packages/tui/src/theme/index.ts`, which needs a static import plus a `DEFAULT_THEMES` entry for every builtin theme.
+
 ## Branch Names
 
 Use a short branch name of at most three words, separated by hyphens. Do not use slashes or type prefixes such as `feat/` or `fix/`.
